@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/trackList">
+
+    <fragment
+        android:id="@+id/trackList"
+        android:name="com.adnahcodes.truebeats.view.TrackList"
+        android:label="fragment_track_list"
+        tools:layout="@layout/fragment_track_list" />
+</navigation>
