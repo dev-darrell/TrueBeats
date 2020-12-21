@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TrueBeats</string>
+    <string name="api_request_error">An error occurred</string>
+    <string name="verify_internet">Verify your internet connection</string>
 </resources>
