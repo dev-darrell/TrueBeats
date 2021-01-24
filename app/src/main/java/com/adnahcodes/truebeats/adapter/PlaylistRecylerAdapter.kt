@@ -5,17 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.adnahcodes.truebeats.R
-import com.adnahcodes.truebeats.databinding.TrackItemBinding
+import com.adnahcodes.truebeats.databinding.PlaylistItemBinding
 import com.adnahcodes.truebeats.model.Playlist
 import com.squareup.picasso.Picasso
 
-class PlaylistRecylerAdapter(val listOfPlaylists: List<Playlist>) :
+class PlaylistRecylerAdapter(val listOfPlaylists: List<Playlist>, val playlistClickHandler: PlaylistClickHandler) :
     RecyclerView.Adapter<PlaylistRecylerAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.playlist_item, parent, false)
 
-       return MyViewHolder(view)
+       return MyViewHolder(view, playlistClickHandler)
     }
 
     override fun getItemCount(): Int {
@@ -26,12 +26,12 @@ class PlaylistRecylerAdapter(val listOfPlaylists: List<Playlist>) :
         holder.bindData(listOfPlaylists.get(position))
     }
 
-    class MyViewHolder(val item: View) : RecyclerView.ViewHolder(item) {
-        init {
+    class MyViewHolder(val item: View, val playlistClickHandler: PlaylistClickHandler) : RecyclerView.ViewHolder(item) {
 
-        }
         fun bindData(playlist: Playlist) {
-            val binding: TrackItemBinding = TrackItemBinding.bind(item)
+            item.setOnClickListener { playlistClickHandler.onPlaylistItemClick(playlist) }
+
+            val binding: PlaylistItemBinding = PlaylistItemBinding.bind(item)
 
 //          Load cover image with picasso
             Picasso.get()
@@ -42,5 +42,9 @@ class PlaylistRecylerAdapter(val listOfPlaylists: List<Playlist>) :
             binding.trackArtistTxtv.text = playlist.dateOfCreation
         }
 
+    }
+
+    interface PlaylistClickHandler {
+        fun onPlaylistItemClick(playlist: Playlist) {}
     }
 }
