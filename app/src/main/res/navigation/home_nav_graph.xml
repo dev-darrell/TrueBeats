@@ -3,11 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_nav_graph"
-    app:startDestination="@id/trackList">
+    app:startDestination="@id/playlistFragment">
 
     <fragment
         android:id="@+id/trackList"
-        android:name="com.adnahcodes.truebeats.view.TrackList"
+        android:name="com.adnahcodes.truebeats.view.TrackListFragment"
         android:label="fragment_track_list"
-        tools:layout="@layout/fragment_track_list" />
+        tools:layout="@layout/fragment_track_list" >
+        <argument
+            android:name="playlist_id"
+            app:argType="long" />
+        <argument
+            android:name="track_count"
+            app:argType="integer"
+            android:defaultValue="10" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.adnahcodes.truebeats.view.PlaylistFragment"
+        android:label="PlaylistFragment"
+        tools:layout="@layout/playlist_fragment">
+        <action
+            android:id="@+id/action_playlistFragment_to_trackList"
+            app:destination="@id/trackList" />
+    </fragment>
 </navigation>

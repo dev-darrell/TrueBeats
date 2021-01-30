@@ -3,4 +3,5 @@
     <string name="api_request_error">An error occurred</string>
     <string name="verify_internet">Verify your internet connection</string>
     <string name="api_call_failure">Error!!</string>
+    <string name="no_preview_available">\" (No Preview Available)\"</string>
 </resources>

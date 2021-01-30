@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.TrackList">
+    tools:context=".view.TrackListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/playlist_item" />
+        tools:listitem="@layout/track_item" />
 
 </FrameLayout>

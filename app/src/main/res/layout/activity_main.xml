@@ -19,7 +19,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
             app:title="@string/app_name" />
 
         <!--        <com.google.android.material.tabs.TabLayout-->
@@ -52,7 +52,16 @@
         <!--        </com.google.android.material.tabs.TabLayout>-->
     </com.google.android.material.appbar.AppBarLayout>
 
-<!--    <androidx.viewpager2.widget.ViewPager2-->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/home_nav_graph" />
+
+
+    <!--    <androidx.viewpager2.widget.ViewPager2-->
 <!--        android:id="@+id/view_pager2"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->
@@ -61,32 +70,7 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="parent"/>-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/playlist_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar"
-        tools:listitem="@layout/playlist_item" />
 
-    <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/test_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/almendra_sc"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display4"
-            android:textSize="22sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/appbar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

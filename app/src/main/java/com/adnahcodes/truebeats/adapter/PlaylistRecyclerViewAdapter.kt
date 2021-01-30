@@ -9,24 +9,25 @@ import com.adnahcodes.truebeats.databinding.PlaylistItemBinding
 import com.adnahcodes.truebeats.model.Playlist
 import com.squareup.picasso.Picasso
 
-class PlaylistRecylerAdapter(val listOfPlaylists: List<Playlist>, val playlistClickHandler: PlaylistClickHandler) :
-    RecyclerView.Adapter<PlaylistRecylerAdapter.MyViewHolder>() {
+
+class PlaylistRecyclerViewAdapter(val listOfPlaylists: List<Playlist>, val playlistClickHandler: PlaylistClickHandler) :
+    RecyclerView.Adapter<PlaylistRecyclerViewAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.playlist_item, parent, false)
 
-       return MyViewHolder(view, playlistClickHandler)
+        return MyViewHolder(view, playlistClickHandler)
     }
 
     override fun getItemCount(): Int {
-       return listOfPlaylists.size
+        return listOfPlaylists.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bindData(listOfPlaylists.get(position))
     }
 
-    class MyViewHolder(val item: View, val playlistClickHandler: PlaylistClickHandler) : RecyclerView.ViewHolder(item) {
+    inner class MyViewHolder(val item: View, val playlistClickHandler: PlaylistClickHandler) : RecyclerView.ViewHolder(item) {
 
         fun bindData(playlist: Playlist) {
             item.setOnClickListener { playlistClickHandler.onPlaylistItemClick(playlist) }
