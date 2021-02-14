@@ -1,5 +1,6 @@
 package com.adnahcodes.truebeats.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adnahcodes.truebeats.R
@@ -18,6 +20,7 @@ import com.adnahcodes.truebeats.viewmodel.TrackListFragmentViewModel
 
 class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackClickHandler {
 
+    lateinit var mBinding: FragmentTrackListBinding
     val args: TrackListFragmentArgs by navArgs()
     private var trackCount: Int = 0
     private var playlistId: Long = 0
@@ -26,14 +29,13 @@ class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackCli
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val mBinding: FragmentTrackListBinding = FragmentTrackListBinding.inflate(inflater,
+        mBinding = FragmentTrackListBinding.inflate(inflater,
             container, false)
-
-        val mViewModel = ViewModelProvider(this).get(TrackListFragmentViewModel::class.java)
 
         playlistId = args.playlistId
         trackCount = args.trackCount
 
+        val mViewModel = ViewModelProvider(this).get(TrackListFragmentViewModel::class.java)
         mViewModel.initializeRetrofit()
         mViewModel.getTracks(playlistId)
 
@@ -67,7 +69,8 @@ class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackCli
 
     override fun onTrackItemClick(track: Track) {
         if (track.isTrackReadable){
-
+            val directions = TrackListFragmentDirections.actionTrackListToTrackPlayerFragment(track.previewUrl)
+            Navigation.findNavController(mBinding.root).navigate(directions)
         }
     }
 
