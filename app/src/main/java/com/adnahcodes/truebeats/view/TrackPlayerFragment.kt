@@ -18,13 +18,13 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 
 
 class TrackPlayerFragment : Fragment() {
+
     lateinit var binding: FragmentTrackPlayerBinding
     val args: TrackPlayerFragmentArgs by navArgs()
     var previewUrl: String = ""
+    lateinit var player: SimpleExoPlayer
 
-
-//    TODO: Move music playing functionality to fragment and implement moving from one song to the next
-//    TODO: Fix exoplayer control view only showing pause button and its disappearing after a bit.
+//    TODO: Move music playing functionality to service and implement moving from one song to the next
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,7 +43,7 @@ class TrackPlayerFragment : Fragment() {
     }
 
     private fun startPlayer() {
-        val player = SimpleExoPlayer.Builder(this.requireActivity()).build()
+        player = SimpleExoPlayer.Builder(this.requireActivity()).build()
         binding.exoplayerControlView.player = player
 
         val mediaItem = MediaItem.fromUri(previewUrl)
@@ -54,6 +54,7 @@ class TrackPlayerFragment : Fragment() {
     }
 
     override fun onDestroy() {
+        player.release()
         super.onDestroy()
     }
 

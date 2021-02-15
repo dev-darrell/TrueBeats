@@ -21,9 +21,7 @@ class TrackPlayerService : Service() {
     }
 
     private fun startPlayer() {
-        val player = SimpleExoPlayer.Builder(this).build()
-
-
+//        val player = SimpleExoPlayer.Builder(this).build()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
