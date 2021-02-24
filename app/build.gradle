@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+//apply from: "/common-android-config.gradle"
 
 android {
     compileSdkVersion 30
@@ -51,6 +52,17 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+////    JDK9+
+//    compileOnly "com.github.pengrad:jdk9-deps:1.0"
+//    if (project.hasProperty('kapt')) {
+//        kapt 'javax.xml.bind:jaxb-api:2.3.1'
+//        kapt 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+//        kapt 'com.sun.xml.bind:jaxb-impl:2.3.2'
+//    }
+//    annotationProcessor 'javax.xml.bind:jaxb-api:2.3.1'
+//    annotationProcessor 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+//    annotationProcessor 'com.sun.xml.bind:jaxb-impl:2.3.2'
 
 //    Retrofit2
     implementation "com.squareup.retrofit2:retrofit:2.9.0"

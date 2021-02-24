@@ -22,7 +22,7 @@
             app:destination="@id/trackPlayerFragment"
             app:launchSingleTop="true"
             app:popUpTo="@id/trackList"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/playlistFragment"
@@ -38,8 +38,10 @@
         android:name="com.adnahcodes.truebeats.view.TrackPlayerFragment"
         android:label="fragment_track_player"
         tools:layout="@layout/fragment_track_player" >
+        <argument android:name="list_of_tracks_urls"
+            app:argType="string[]"/>
         <argument
-            android:name="track_preview_url"
-            app:argType="string" />
+            android:name="track_position"
+            app:argType="integer" />
     </fragment>
 </navigation>

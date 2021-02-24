@@ -1,6 +1,5 @@
 package com.adnahcodes.truebeats.view
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,6 +16,7 @@ import com.adnahcodes.truebeats.adapter.TrackRecyclerAdapter
 import com.adnahcodes.truebeats.databinding.FragmentTrackListBinding
 import com.adnahcodes.truebeats.model.Track
 import com.adnahcodes.truebeats.viewmodel.TrackListFragmentViewModel
+import java.util.*
 
 class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackClickHandler {
 
@@ -24,6 +24,8 @@ class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackCli
     val args: TrackListFragmentArgs by navArgs()
     private var trackCount: Int = 0
     private var playlistId: Long = 0
+    private lateinit var adapter: TrackRecyclerAdapter
+    private lateinit var allTracksUrls: Array<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +46,10 @@ class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackCli
                 mViewModel.responseLiveData.observe(viewLifecycleOwner, Observer { response ->
                     if (response.isSuccessful) {
 
-                        val adapter = response.body()?.data?.let {trackList ->
-                            TrackRecyclerAdapter(trackList, this)
+//      TODO: Restructure app to only pass tracks Url list between classes and get full track info from that
+                        response.body()?.data?.apply {
+                            adapter = TrackRecyclerAdapter(this, this@TrackListFragment)
+                            allTracksUrls = this.map(Track::previewUrl).toTypedArray()
                         }
 
                         mBinding.trackRecyclerView.setHasFixedSize(true)
@@ -64,12 +68,11 @@ class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackCli
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
-    override fun onTrackItemClick(track: Track) {
+    override fun onTrackItemClick(track: Track, position: Int) {
         if (track.isTrackReadable){
-            val directions = TrackListFragmentDirections.actionTrackListToTrackPlayerFragment(track.previewUrl)
+            val directions = TrackListFragmentDirections.actionTrackListToTrackPlayerFragment(allTracksUrls, position)
             Navigation.findNavController(mBinding.root).navigate(directions)
         }
     }

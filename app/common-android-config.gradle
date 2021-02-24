@@ -1,0 +1,13 @@
+dependencies {
+    // things need to have build on JDK9+
+    if (project.hasProperty('kapt')) {
+        kapt libraries.jaxbApi
+        kapt libraries.jaxbCore
+        kapt libraries.jaxbImpl
+    }
+    compileOnly libraries.jdk9Deps
+
+    annotationProcessor libraries.jaxbApi
+    annotationProcessor libraries.jaxbCore
+    annotationProcessor libraries.jaxbImpl
+}

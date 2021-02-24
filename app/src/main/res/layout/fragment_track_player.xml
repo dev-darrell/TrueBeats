@@ -10,18 +10,15 @@
         android:id="@+id/exoplayer_control_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:measureAllChildren="true"
+        android:clipChildren="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:show_fastforward_button="true"
+        app:show_next_button="true"
+        app:show_previous_button="true"
         app:show_rewind_button="true"
         app:show_shuffle_button="true"
-        app:show_next_button="false"
-        app:show_previous_button="false"
-        app:repeat_toggle_modes="none"
         app:show_timeout="0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
