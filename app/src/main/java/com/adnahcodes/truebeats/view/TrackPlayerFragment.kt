@@ -34,7 +34,6 @@ class TrackPlayerFragment : Fragment() {
         }
     }
 
-//    TODO: Implement moving from one song to the next
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
     // Inflate the layout for this fragment
         binding = FragmentTrackPlayerBinding.inflate(inflater, container, false)

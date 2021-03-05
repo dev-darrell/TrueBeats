@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.adnahcodes.truebeats.data.DeezerService
-import com.adnahcodes.truebeats.data.RetrofitHelper
+import com.adnahcodes.truebeats.data.api.DeezerService
+import com.adnahcodes.truebeats.data.api.RetrofitHelper
 import com.adnahcodes.truebeats.model.ListOfPlaylists
 import com.adnahcodes.truebeats.view.MainActivity
 import retrofit2.Call

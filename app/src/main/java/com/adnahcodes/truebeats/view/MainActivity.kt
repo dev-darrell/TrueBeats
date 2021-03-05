@@ -1,8 +1,8 @@
 package com.adnahcodes.truebeats.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.appcompat.app.AppCompatActivity
 import com.adnahcodes.truebeats.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

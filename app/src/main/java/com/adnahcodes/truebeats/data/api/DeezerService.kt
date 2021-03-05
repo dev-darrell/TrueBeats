@@ -1,4 +1,4 @@
-package com.adnahcodes.truebeats.data
+package com.adnahcodes.truebeats.data.api
 
 import com.adnahcodes.truebeats.model.ListOfPlaylists
 import com.adnahcodes.truebeats.model.ListOfTracks

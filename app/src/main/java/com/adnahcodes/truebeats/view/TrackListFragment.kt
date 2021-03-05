@@ -1,11 +1,11 @@
 package com.adnahcodes.truebeats.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -27,6 +27,8 @@ class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackCli
     private lateinit var adapter: TrackRecyclerAdapter
     private lateinit var allTracksUrls: Array<String>
 
+//    TODO: Migrate this fragment to access tracks from the Room db through it's viewmodel class.
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,15 +40,13 @@ class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackCli
         trackCount = args.trackCount
 
         val mViewModel = ViewModelProvider(this).get(TrackListFragmentViewModel::class.java)
-        mViewModel.initializeRetrofit()
-        mViewModel.getTracks(playlistId)
+        mViewModel.getTracks(playlistId, requireContext().applicationContext)
 
         mViewModel.requestSucceeded.observe(viewLifecycleOwner, Observer { requestSucceeded ->
             if (requestSucceeded) {
                 mViewModel.responseLiveData.observe(viewLifecycleOwner, Observer { response ->
                     if (response.isSuccessful) {
 
-//      TODO: Restructure app to only pass tracks Url list between classes and get full track info from that
                         response.body()?.data?.apply {
                             adapter = TrackRecyclerAdapter(this, this@TrackListFragment)
                             allTracksUrls = this.map(Track::previewUrl).toTypedArray()
