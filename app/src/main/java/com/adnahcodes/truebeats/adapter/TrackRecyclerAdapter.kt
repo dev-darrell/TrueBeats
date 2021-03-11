@@ -10,7 +10,7 @@ import com.adnahcodes.truebeats.databinding.TrackItemBinding
 import com.adnahcodes.truebeats.model.Track
 import com.squareup.picasso.Picasso
 
-class TrackRecyclerAdapter(val trackList: List<Track>, val trackClickHandler: TrackClickHandler) : RecyclerView.Adapter<TrackRecyclerAdapter.MyViewHolder>() {
+class TrackRecyclerAdapter(val trackList: Array<Track>, val trackClickHandler: TrackClickHandler) : RecyclerView.Adapter<TrackRecyclerAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)

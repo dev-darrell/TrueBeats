@@ -16,6 +16,6 @@ interface TrackDao {
     @Delete
     fun deleteTracks(trackList: List<Track>)
 
-    @Query("SELECT * from TrackEntity")
+    @Query("SELECT * from Track")
     fun getTracks() : LiveData<List<Track>>
 }

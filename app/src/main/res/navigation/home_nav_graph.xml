@@ -38,10 +38,11 @@
         android:name="com.adnahcodes.truebeats.view.TrackPlayerFragment"
         android:label="fragment_track_player"
         tools:layout="@layout/fragment_track_player" >
-        <argument android:name="list_of_tracks_urls"
-            app:argType="string[]"/>
         <argument
             android:name="track_position"
             app:argType="integer" />
+        <argument
+            android:name="allTracks"
+            app:argType="com.adnahcodes.truebeats.model.Track[]" />
     </fragment>
 </navigation>

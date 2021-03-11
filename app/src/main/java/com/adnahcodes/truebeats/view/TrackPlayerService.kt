@@ -6,17 +6,21 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Binder
 import android.os.IBinder
+import com.adnahcodes.truebeats.model.Track
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
+import com.squareup.picasso.Picasso
+import java.util.concurrent.Executor
 
 
 class TrackPlayerService : Service() {
 
-    private lateinit var allTracksUrls: Array<String>
+    private var allTracks: List<Track>? = null
     private var selectedTrackPosition = 0
     private lateinit var exoPlayer: SimpleExoPlayer
+    private lateinit var playerNotificationManager: PlayerNotificationManager
     private lateinit var currentPlaylist: ArrayList<String>
 
 
@@ -28,32 +32,35 @@ class TrackPlayerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
-            allTracksUrls = it.getStringArrayExtra(TrackPlayerFragment.ALL_TRACK_URLS) as Array<String>
+            allTracks = (it.getParcelableArrayExtra(TrackPlayerFragment.ALL_TRACKS) as? Array<*>)
+                ?.filterIsInstance<Track>()
             selectedTrackPosition = it.getIntExtra(TrackPlayerFragment.TRACK_URL, 0)
 
-            setupMedia(allTracksUrls[selectedTrackPosition])
+            allTracks
+            setupMedia()
         }
         return START_NOT_STICKY
     }
 
-    private fun setupMedia(selectedTrackUrl: String) {
-        val mediaItem = MediaItem.fromUri(selectedTrackUrl)
+    private fun setupMedia() {
+        val selectedTrack = allTracks?.get(selectedTrackPosition)
+        val mediaItem = selectedTrack?.let{
+            MediaItem.fromUri(selectedTrack.previewUrl) }
         exoPlayer.playWhenReady = true
-        exoPlayer.setMediaItem(mediaItem)
+        exoPlayer.setMediaItem(mediaItem!!)
         exoPlayer.prepare()
-        addNextTracks(selectedTrackUrl)
+        addNextTracks(selectedTrack)
     }
 
 //    TODO: Get list of tracks from Room db and add them to the playlist from there.
 
-    private fun addNextTracks(selectedTrackUrl: String) {
-        for (i in allTracksUrls){
-            if (i != selectedTrackUrl){
-                exoPlayer.addMediaItem(MediaItem.fromUri(i))
+    private fun addNextTracks(selectedTrack: Track) {
+        for (i in allTracks!!){
+            if (i != selectedTrack){
+                exoPlayer.addMediaItem(MediaItem.fromUri(i.previewUrl))
             } else {
                 return
             }
-            currentPlaylist.add(i)
         }
     }
 
@@ -61,8 +68,9 @@ class TrackPlayerService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        val playerNotificationManager = PlayerNotificationManager(this, CHANNEL_ID, NOTIFICATION_ID, DescriptionAdapter())
         exoPlayer = SimpleExoPlayer.Builder(this).build()
+        playerNotificationManager = PlayerNotificationManager(this, CHANNEL_ID, NOTIFICATION_ID, DescriptionAdapter())
+        playerNotificationManager.setPlayer(exoPlayer)
     }
 
 //   TODO: Maintain access to list of tracks in current exoplayer playlist and use the current window index
@@ -70,28 +78,53 @@ class TrackPlayerService : Service() {
 
     private inner class DescriptionAdapter : PlayerNotificationManager.MediaDescriptionAdapter {
         override fun getCurrentContentTitle(player: Player): CharSequence {
-//            val window = player.currentWindowIndex
-//            currentPlaylist.get(window)
-//            return getTitle(window)
-            TODO("Not yet implemented")
+            val window = player.currentWindowIndex
+            return allTracks?.get(window)!!.title
         }
 
         override fun createCurrentContentIntent(player: Player): PendingIntent? {
-            TODO("Not yet implemented")
+            val window = player.currentWindowIndex
+
+            val notifyIntent = Intent(this@TrackPlayerService, TrackPlayerFragment::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+            val notifyPendingIntent = PendingIntent.getActivity(this@TrackPlayerService,
+                0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            return notifyPendingIntent
         }
 
         override fun getCurrentContentText(player: Player): CharSequence? {
-            TODO("Not yet implemented")
+            val window = player.currentWindowIndex
+            return allTracks?.get(window)!!.artist.artistName
         }
 
+//        FIXME: Error from Picasso while creating bitmap for notification
+//         - get method must not be called on the main thread.
         override fun getCurrentLargeIcon(
             player: Player,
             callback: PlayerNotificationManager.BitmapCallback
         ): Bitmap? {
-            TODO("Not yet implemented")
+            val window = player.currentWindowIndex
+            var largeIcon: Bitmap? = null
+
+            val myExecutor = object: Executor {
+                override fun execute(command: Runnable?) {
+                    Thread(command).start()
+                }
+            }
+            myExecutor.execute(Runnable { largeIcon = Picasso.get()
+                .load(allTracks?.get(window)!!.album.albumPicture)
+                .get()
+            })
+
+            return largeIcon
         }
 
+
+
     }
+
 
 
     inner class TrackPlayerServiceBinder : Binder() {
@@ -100,6 +133,7 @@ class TrackPlayerService : Service() {
     }
 
     override fun onDestroy() {
+
         exoPlayer.release()
         super.onDestroy()
     }

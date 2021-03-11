@@ -4,30 +4,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.adnahcodes.truebeats.R
 import com.adnahcodes.truebeats.adapter.TrackRecyclerAdapter
 import com.adnahcodes.truebeats.databinding.FragmentTrackListBinding
 import com.adnahcodes.truebeats.model.Track
 import com.adnahcodes.truebeats.viewmodel.TrackListFragmentViewModel
-import java.util.*
 
 class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackClickHandler {
+
+//    FIXME: TrackListFragment becomes unresponsive immediately after showing list of tracks
 
     lateinit var mBinding: FragmentTrackListBinding
     val args: TrackListFragmentArgs by navArgs()
     private var trackCount: Int = 0
     private var playlistId: Long = 0
     private lateinit var adapter: TrackRecyclerAdapter
+    private lateinit var allTracks: Array<Track>
     private lateinit var allTracksUrls: Array<String>
+    private val viewmodel: TrackListFragmentViewModel = TrackListFragmentViewModel()
 
-//    TODO: Migrate this fragment to access tracks from the Room db through it's viewmodel class.
+//    TODO: Migrate this fragment to access tracks from the Room db through its viewmodel class.
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        playlistId = args.playlistId
+        trackCount = args.trackCount
+
+        viewmodel.loadTracksFromApi(playlistId, requireContext().applicationContext)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,45 +44,38 @@ class TrackListFragment : Fragment(), TrackRecyclerAdapter.MyViewHolder.TrackCli
         mBinding = FragmentTrackListBinding.inflate(inflater,
             container, false)
 
-        playlistId = args.playlistId
-        trackCount = args.trackCount
-
-        val mViewModel = ViewModelProvider(this).get(TrackListFragmentViewModel::class.java)
-        mViewModel.getTracks(playlistId, requireContext().applicationContext)
-
-        mViewModel.requestSucceeded.observe(viewLifecycleOwner, Observer { requestSucceeded ->
-            if (requestSucceeded) {
-                mViewModel.responseLiveData.observe(viewLifecycleOwner, Observer { response ->
-                    if (response.isSuccessful) {
-
-                        response.body()?.data?.apply {
-                            adapter = TrackRecyclerAdapter(this, this@TrackListFragment)
-                            allTracksUrls = this.map(Track::previewUrl).toTypedArray()
-                        }
-
-                        mBinding.trackRecyclerView.setHasFixedSize(true)
-                        mBinding.trackRecyclerView.layoutManager = LinearLayoutManager(context)
-                        mBinding.trackRecyclerView.adapter = adapter
-                    } else {
-                        Toast.makeText(context, getString(R.string.api_request_error), Toast.LENGTH_LONG).show()
-                    }
-                })
-            } else {
-                Toast.makeText(context, mViewModel.errorMessage, Toast.LENGTH_LONG).show()
-            }
-        })
+//        val mViewModel = ViewModelProvider(this).get(TrackListFragmentViewModel::class.java)
+        getTracks()
         return mBinding.root;
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+
+    private fun getTracks() {
+        val tracks = viewmodel.getTracksFromDb()
+        tracks.observe(viewLifecycleOwner, Observer { trackList ->
+            allTracks = trackList.toTypedArray()
+            adapter = TrackRecyclerAdapter(allTracks, this)
+            mBinding.trackRecyclerView.adapter = adapter
+        })
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+//        allTracksUrls = allTracks.map(Track::previewUrl).toTypedArray()
+
+        mBinding.trackRecyclerView.setHasFixedSize(true)
+        mBinding.trackRecyclerView.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun loadTracks() {
+//        viewmodel.loadTracksFromApi(playlistId, requireContext().applicationContext)
+//        viewmodel.getTracksFromDb()
+
     }
 
     override fun onTrackItemClick(track: Track, position: Int) {
-        if (track.isTrackReadable){
-            val directions = TrackListFragmentDirections.actionTrackListToTrackPlayerFragment(allTracksUrls, position)
+            val directions = TrackListFragmentDirections.actionTrackListToTrackPlayerFragment(position, allTracks)
             Navigation.findNavController(mBinding.root).navigate(directions)
-        }
     }
 
     companion object {

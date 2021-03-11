@@ -5,11 +5,13 @@ import com.adnahcodes.truebeats.model.Track
 
 interface Repository {
 
-    fun getTracksFromRoom(): LiveData<List<Track>>
+    suspend fun getTracksFromRoom(): LiveData<List<Track>>
 
-    fun insertTrackstoRoom(trackList: List<Track>)
+    suspend fun insertTrackstoRoom(trackList: List<Track>)
 
-    fun updateRoomTracks(trackList: List<Track>)
+    suspend fun updateRoomTracks(trackList: List<Track>)
 
-    fun getTracksFromApi(playlistId: Long): List<Track>?
+    suspend fun deleteRoomTracks(trackList: List<Track>)
+
+    fun getTracksFromApi(playlistId: Long, onSuccess: (trackList: List<Track>?) -> Unit)
 }
