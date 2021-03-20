@@ -37,6 +37,7 @@ class PlaylistFragmentViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<ListOfPlaylists>, t: Throwable) {
+//                TODO: Add a swipe to refresh feature to the playlist fragment to retry after an error loading
                 Log.e(MainActivity.TAG, "onFailure: ${call.request().url()} and ${t.toString()}")
                 _requestSucceeded.value = false
                 errorMessage = t.message

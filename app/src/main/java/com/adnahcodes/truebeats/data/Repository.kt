@@ -5,7 +5,7 @@ import com.adnahcodes.truebeats.model.Track
 
 interface Repository {
 
-    suspend fun getTracksFromRoom(): LiveData<List<Track>>
+    fun getTracksFromRoom(): LiveData<List<Track>>
 
     suspend fun insertTrackstoRoom(trackList: List<Track>)
 

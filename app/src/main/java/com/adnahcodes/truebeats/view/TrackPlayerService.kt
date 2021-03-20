@@ -113,10 +113,11 @@ class TrackPlayerService : Service() {
                     Thread(command).start()
                 }
             }
-            myExecutor.execute(Runnable { largeIcon = Picasso.get()
+//            myExecutor.execute(Runnable { largeIcon =
+                Picasso.get()
                 .load(allTracks?.get(window)!!.album.albumPicture)
                 .get()
-            })
+//            })
 
             return largeIcon
         }

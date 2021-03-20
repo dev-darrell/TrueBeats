@@ -16,7 +16,7 @@ import retrofit2.Response
 class RepositoryImplementation(db: RoomDB): Repository {
     private var trackDao = db.TrackDao()
 
-    override suspend fun getTracksFromRoom(): LiveData<List<Track>> {
+    override fun getTracksFromRoom(): LiveData<List<Track>> {
         val dbTrackLiveData = trackDao.getTracks()
         return dbTrackLiveData
     }

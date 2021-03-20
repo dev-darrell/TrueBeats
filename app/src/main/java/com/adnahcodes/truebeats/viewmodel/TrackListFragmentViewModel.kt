@@ -18,6 +18,7 @@ class TrackListFragmentViewModel() : ViewModel() {
     private val mutableDbTrackList: MutableLiveData<List<Track>> = MutableLiveData()
     var trackListFromDB: LiveData<List<Track>> = mutableDbTrackList
     private lateinit var repository: RepositoryImplementation
+    private var tracksGottenFromApi: Boolean = false
 
 
     fun loadTracksFromApi(playlistId: Long, context: Context) {
@@ -31,6 +32,7 @@ class TrackListFragmentViewModel() : ViewModel() {
         trackListFromApi = trackList
         if (!trackListFromApi.isNullOrEmpty()) {
             saveTracksToDb()
+            tracksGottenFromApi = true
         } else {
             Log.e(TrackListFragment.TAG,"getTracks(ViewModel): Error getting track list from API, see earlier log.") }
     }
@@ -41,11 +43,19 @@ class TrackListFragmentViewModel() : ViewModel() {
         }
     }
 
-//    FIXME: Error accessing data from Room on a background thread using coroutines
+//    FIXME: Change the app's structure for accessing data such that getTracksFromDb() is only
+//     called in code after it's proved verifiably that the api call has returned tracks.
 
     fun getTracksFromDb(): LiveData<List<Track>> {
-        GlobalScope.launch {
-                mutableDbTrackList.value = repository.getTracksFromRoom().value
+//        Check that tracks have been gotten before trying to retrieve them from Room. This avoids
+//        an error where the observed tracklist in TrackListFragment is empty.
+//        Note: Making the thread sleep & calling this method recursively without the boolean changing currently causes an ANR.
+
+        if (tracksGottenFromApi) {
+            mutableDbTrackList.value = repository.getTracksFromRoom().value
+        } else {
+            Thread.sleep(500)
+            getTracksFromDb()
         }
         return trackListFromDB
     }
